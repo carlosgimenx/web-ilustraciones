@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>C. Gimeno | Portfolio v0.3</title>
+    <title>C. Gimeno | Portfolio v0.3.1</title>
     <style>
-        /* 1. ESTILO BASE Y RATÓN */
+        /* 1. BASE Y CONFIGURACIÓN */
         body, html {
-            margin: 0; padding: 0; height: 100%; width: 100%;
+            margin: 0; padding: 0; width: 100%;
             font-family: 'Inter', sans-serif; background-color: #f0f0f0; 
-            overflow: hidden;
+            overflow-x: hidden; /* Evita desplazamientos laterales raros */
         }
 
         /* Barra de progreso superior */
@@ -19,28 +19,34 @@
             transition: width 0.1s ease-out;
         }
 
+        /* Ratón personalizado solo en PC */
         @media (min-width: 1024px) {
             * { cursor: none !important; }
             .cursor-dot { width: 8px; height: 8px; background: #ff4d00; position: fixed; pointer-events: none; z-index: 10000; border-radius: 50%; transform: translate(-50%, -50%); }
             .cursor-outline { width: 40px; height: 40px; border: 2px solid #000; position: fixed; pointer-events: none; z-index: 9999; border-radius: 50%; transform: translate(-50%, -50%); transition: all 0.1s ease-out; }
         }
 
-        /* 2. CONTENEDOR HORIZONTAL */
+        /* 2. CONTENEDOR PRINCIPAL */
         .main-container {
             display: flex; width: 100vw; height: 100vh;
-            overflow-x: auto; overflow-y: hidden; scroll-behavior: smooth; 
-            scrollbar-width: thin; scrollbar-color: #ff4d00 #eee;
+            overflow-x: auto; overflow-y: hidden; scroll-behavior: smooth;
         }
 
-        /* Barra de scroll visual para Chrome/Safari */
-        .main-container::-webkit-scrollbar { height: 6px; display: block; }
-        .main-container::-webkit-scrollbar-thumb { background: #ff4d00; border-radius: 10px; }
-
+        /* REGLAS PARA MÓVIL (SCROLL VERTICAL) */
         @media (max-width: 768px) {
-            .main-container { flex-direction: column; height: auto; overflow-y: auto; overflow-x: hidden; }
+            body, html { overflow-y: auto; }
+            .main-container {
+                display: block; 
+                height: auto; 
+                overflow-y: visible; 
+                overflow-x: hidden;
+            }
         }
 
         section { flex-shrink: 0; height: 100%; display: flex; align-items: center; box-sizing: border-box; position: relative; }
+        @media (max-width: 768px) {
+            section { width: 100vw; height: auto; padding: 80px 20px; flex-direction: column; }
+        }
 
         /* 3. HERO */
         .hero { width: 100vw; padding: 8vw; }
@@ -52,7 +58,7 @@
         .btn-black { background: #000; color: #fff; }
         .btn-orange { background: #ff4d00; color: #fff; border: 2px solid #ff4d00; }
 
-        /* 4. PORTFOLIO BRUTAL (Con tus imágenes de GitHub) */
+        /* 4. PORTFOLIO BRUTAL */
         .portfolio-brutal { display: flex; gap: 60px; padding: 0 150px; align-items: center; }
         .bg-text { position: absolute; font-size: 25vw; font-weight: 900; color: #e8e8e8; z-index: -1; white-space: nowrap; pointer-events: none; }
 
@@ -79,7 +85,6 @@
         .sticker-label { background: #000; color: #fff; font-size: 0.5rem; padding: 3px 6px; font-weight: 900; text-align: center; }
 
         @media (max-width: 768px) {
-            section { width: 100vw; height: auto; padding: 80px 20px; flex-direction: column; }
             .portfolio-brutal { flex-direction: column; padding: 20px; gap: 60px; }
             .port-item { height: auto; width: 100%; transform: none !important; margin: 0 !important; }
             .port-item img { width: 100%; height: auto; }
@@ -94,14 +99,14 @@
     <div class="cursor-outline"></div>
 
     <div id="sticker" class="sticker">
-        <img src="img/sticker-roma.webp" alt="Roma">
+        <img src="./img/sticker-final.webp" alt="Sticker">
         <div class="sticker-label">MUEVE EL ARTE</div>
     </div>
 
     <div class="main-container" id="scroll-container">
         
         <section class="hero">
-            <img src="img/tu-logo.webp" alt="Logo" class="logo">
+            <img src="./img/tu-logo.webp" alt="Logo" class="logo">
             <h1>CARLOS<br>GIMENO</h1>
             <div class="nav-buttons">
                 <a href="mailto:hola@cgimeno.com" class="btn btn-black">Hablemos</a>
@@ -111,16 +116,9 @@
 
         <section class="portfolio-brutal">
             <div class="bg-text">ILUSTRACIÓN</div>
-            
-            <div class="port-item">
-                <img src="img/ilustracion-1.webp" alt="Obra 1">
-            </div>
-            <div class="port-item">
-                <img src="img/ilustracion-2.webp" alt="Obra 2">
-            </div>
-            <div class="port-item">
-                <img src="img/ilustracion-3.webp" alt="Obra 3">
-            </div>
+            <div class="port-item"><img src="./img/ilustracion-1.webp" alt="Obra 1"></div>
+            <div class="port-item"><img src="./img/ilustracion-2.webp" alt="Obra 2"></div>
+            <div class="port-item"><img src="./img/ilustracion-3.webp" alt="Obra 3"></div>
         </section>
 
         <section class="packs-section" id="packs-target">
@@ -158,14 +156,12 @@
         const container = document.getElementById('scroll-container');
         const bar = document.getElementById('bar');
 
-        // LÓGICA BARRA DE PROGRESO
         container.addEventListener('scroll', () => {
             const max = container.scrollWidth - container.clientWidth;
             const pct = (container.scrollLeft / max) * 100;
             bar.style.width = pct + "%";
         });
 
-        // BOTÓN IR A PACKS
         function goToPacks() {
             if (window.innerWidth > 768) {
                 container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
@@ -174,7 +170,6 @@
             }
         }
 
-        // SCROLL RUEDA (PC)
         window.addEventListener('wheel', (e) => {
             if (window.innerWidth > 768 && e.deltaY !== 0) {
                 e.preventDefault();
@@ -182,19 +177,15 @@
             }
         }, { passive: false });
 
-        // RATÓN CUSTOM
         const dot = document.querySelector('.cursor-dot');
         const outline = document.querySelector('.cursor-outline');
         window.addEventListener('mousemove', (e) => {
             if (dot) {
-                dot.style.left = e.clientX + 'px';
-                dot.style.top = e.clientY + 'px';
-                outline.style.left = e.clientX + 'px';
-                outline.style.top = e.clientY + 'px';
+                dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px';
+                outline.style.left = e.clientX + 'px'; outline.style.top = e.clientY + 'px';
             }
         });
 
-        // MODAL CON DESGLOSE DE PAGO (60/40)
         function openPack(n, p) {
             document.getElementById('m-title').innerText = n + " (" + p + "€)";
             document.getElementById('m-60').innerText = (p * 0.6).toFixed(0) + "€";
@@ -202,7 +193,6 @@
             document.getElementById('packModal').style.display = 'flex';
         }
 
-        // STICKER DRAG
         const sticker = document.getElementById('sticker');
         let isDragging = false, ox, oy;
         const start = (e) => { isDragging = true; const c = e.touches ? e.touches[0] : e; ox = c.clientX - sticker.offsetLeft; oy = c.clientY - sticker.offsetTop; };
@@ -211,6 +201,5 @@
         window.addEventListener('mousemove', move); window.addEventListener('touchmove', move);
         window.addEventListener('mouseup', () => isDragging = false); window.addEventListener('touchend', () => isDragging = false);
     </script>
-
 </body>
 </html>
