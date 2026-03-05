@@ -5,97 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>C. Gimeno | Ilustrador</title>
     <style>
-        /* 1. BASE */
+        /* 1. BASE Y LIMPIEZA */
         body, html {
             margin: 0; padding: 0; width: 100%; min-height: 100%;
-            font-family: 'Inter', sans-serif; background-color: #fff; /* Fondo blanco para pintar */
+            font-family: 'Inter', sans-serif; background-color: #fff;
             overflow-x: hidden;
         }
 
-        /* 2. EL LIENZO DE FONDO */
-        #bg-canvas {
+        /* 2. EL LIENZO DE FONDO (Interactivo) */
+        #painting-canvas {
             position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh;
-            z-index: 1; /* Detrás del contenido, delante del fondo */
-            pointer-events: none; /* Permite hacer click en botones debajo */
+            z-index: 5; /* Por encima del fondo, por debajo del texto */
+            pointer-events: none; /* Crucial para poder clickar botones */
         }
 
-        /* 3. CURSOR ESPECIAL (Inversión de color) */
+        /* 3. CURSOR "PINCEL" */
         .cursor-brush {
-            width: 40px; height: 40px;
+            width: 30px; height: 30px;
             background: #000;
             border-radius: 50%;
             position: fixed;
             pointer-events: none;
             z-index: 10005;
             transform: translate(-50%, -50%);
-            mix-blend-mode: difference; /* Aquí ocurre la magia con el texto */
+            mix-blend-mode: difference; /* Esto hace que brille sobre negro */
         }
 
-        /* 4. CONTENIDO (Z-index superior para que el texto sea legible) */
+        /* 4. CONTENIDO CON MEZCLA */
         .main-container {
             position: relative; z-index: 10;
             display: flex; width: 100%; height: 100vh;
             overflow-x: auto; overflow-y: hidden;
         }
 
-        /* Forzamos el texto a ser negro para que el mix-blend-mode lo invierta a blanco */
-        h1, .contact-title, .bg-text {
+        h1, .bg-text, .contact-title {
             color: #000;
-            mix-blend-mode: multiply; /* Mantiene el texto visible sobre el trazo */
+            /* Esta propiedad permite que el trazo del canvas "interacte" visualmente */
+            mix-blend-mode: difference; 
         }
 
-        /* 5. PORTFOLIO Y SECCIONES */
         section { flex-shrink: 0; height: 100%; display: flex; align-items: center; width: 100vw; position: relative; }
         
-        .hero { width: 85vw; padding: 5vw; }
-        h1 { font-size: 10vw; font-weight: 900; line-height: 0.85; margin: 0; text-transform: uppercase; letter-spacing: -4px; }
-
-        .portfolio-brutal { display: flex; gap: 80px; padding: 0 5vw; align-items: center; width: auto; }
+        /* 5. PORTFOLIO SCRATCH */
+        .portfolio-brutal { display: flex; gap: 80px; padding: 0 5vw; align-items: center; }
         .port-item { position: relative; height: 60vh; z-index: 20; }
-        .scratch-container { position: relative; height: 100%; border-radius: 4px; box-shadow: 0 30px 60px rgba(0,0,0,0.1); overflow: hidden; background: #000; }
+        .scratch-container { position: relative; height: 100%; border-radius: 4px; overflow: hidden; background: #000; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
         .scratch-container img { height: 100%; width: auto; display: block; }
-        .scratch-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .scratch-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; }
 
-        .contact-section { width: 100vw; background: #ff4d00; color: #fff; flex-direction: column; justify-content: center; text-align: center; }
-        /* El fondo naranja de contacto debe tapar el dibujo para legibilidad */
-        .contact-section { z-index: 30; } 
+        /* 6. BOTÓN LIMPIAR (Para no saturar la web) */
+        .clear-btn {
+            position: fixed; bottom: 20px; left: 20px; z-index: 10006;
+            background: #000; color: #fff; border: none; padding: 10px 15px;
+            font-size: 0.7rem; font-weight: 900; cursor: pointer; border-radius: 5px;
+        }
 
-        .whatsapp-btn { background: #000; color: #fff; padding: 20px 50px; border-radius: 100px; text-decoration: none; font-weight: 900; font-size: 1.2rem; }
-
-        /* STICKER */
-        .sticker { position: fixed; top: 15%; right: 5%; width: 110px; z-index: 10001; cursor: grab; transform: rotate(-10deg); }
-        .sticker img { width: 100%; height: auto; }
-
+        /* MÓVIL */
         @media (max-width: 768px) {
             .main-container { display: block; height: auto; }
-            section { width: 100%; height: auto; padding: 60px 20px; flex-direction: column; align-items: center; }
-            .hero { min-height: 50vh; text-align: center; padding-top: 100px; }
-            h1 { font-size: 18vw; }
-            .portfolio-brutal { flex-direction: column; gap: 40px; }
+            section { width: 100%; height: auto; padding: 80px 20px; flex-direction: column; }
+            h1 { font-size: 18vw; text-align: center; }
+            .portfolio-brutal { flex-direction: column; }
             .port-item { width: 100%; height: auto; }
             .port-item img { width: 100%; height: auto; }
-            .scratch-canvas { display: none; }
-            .sticker { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; }
+            .scratch-canvas { display: none; } /* Desactivado en móvil por rendimiento */
         }
     </style>
 </head>
 <body>
 
-    <canvas id="bg-canvas"></canvas>
+    <canvas id="painting-canvas"></canvas>
     <div class="cursor-brush"></div>
-
-    <div id="sticker" class="sticker">
-        <img src="./img/sticker-final.webp" alt="Sticker">
-    </div>
+    <button class="clear-btn" onclick="clearCanvas()">LIMPIAR LIENZO</button>
 
     <div class="main-container" id="scroll-container">
         
         <section class="hero">
             <h1>CARLOS<br>GIMENO</h1>
-            <div style="margin-top: 30px;">
-                <a href="https://wa.me/34670898357" class="whatsapp-btn">WHATSAPP</a>
-            </div>
         </section>
 
         <section class="portfolio-brutal">
@@ -113,36 +100,34 @@
             </div>
         </section>
 
-        <section class="contact-section" id="contact-target">
-            <div class="contact-title" style="color: #fff; mix-blend-mode: normal;">¿QUIERES SABER MÁS?</div>
-            <a href="https://wa.me/34670898357" class="whatsapp-btn" style="background: #fff; color: #ff4d00;">DAME CAÑA</a>
+        <section class="contact-section" style="background:#ff4d00; width:100vw; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+            <h2 class="contact-title" style="color:#fff; mix-blend-mode: normal; font-size: 8vw; font-weight:900;">¿DAME CAÑA?</h2>
+            <a href="https://wa.me/34670898357" style="background:#000; color:#fff; padding:20px 40px; border-radius:50px; text-decoration:none; font-weight:900; margin-top:20px;">WHATSAPP</a>
         </section>
     </div>
 
     <script>
-        const canvas = document.getElementById('bg-canvas');
+        const canvas = document.getElementById('painting-canvas');
         const ctx = canvas.getContext('2d');
         const brush = document.querySelector('.cursor-brush');
         
-        // Ajustar canvas al tamaño de ventana
         function resize() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             ctx.lineCap = 'round';
-            ctx.lineWidth = 40;
+            ctx.lineWidth = 35;
             ctx.strokeStyle = '#000';
         }
         window.addEventListener('resize', resize);
         resize();
 
-        // Lógica de pintado de fondo
         let lastX, lastY;
+
+        // Pintar en el fondo
         window.addEventListener('mousemove', (e) => {
-            // Mover el cursor-pincel
             brush.style.left = e.clientX + 'px';
             brush.style.top = e.clientY + 'px';
 
-            // Pintar en el canvas de fondo
             ctx.beginPath();
             ctx.moveTo(lastX || e.clientX, lastY || e.clientY);
             ctx.lineTo(e.clientX, e.clientY);
@@ -150,7 +135,11 @@
             [lastX, lastY] = [e.clientX, e.clientY];
         });
 
-        // Portfolio Scratch Effect (el que ya teníamos)
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Efecto Scratch en Portfolio
         const sCanvases = document.querySelectorAll('.scratch-canvas');
         sCanvases.forEach(sc => {
             const sCtx = sc.getContext('2d');
@@ -160,7 +149,7 @@
                 sCtx.filter = 'grayscale(100%) brightness(0.8)';
                 sCtx.drawImage(img, 0, 0, sc.width, sc.height);
                 sCtx.globalCompositeOperation = 'destination-out';
-                sCtx.lineWidth = 150; sCtx.lineCap = 'round';
+                sCtx.lineWidth = 100; sCtx.lineCap = 'round';
             }
             if (img.complete) init(); else img.onload = init;
             sc.addEventListener('mousemove', (e) => {
@@ -172,19 +161,12 @@
             });
         });
 
-        // Sticker Drag (el de siempre)
-        const sticker = document.getElementById('sticker');
-        let isDragging = false, ox, oy;
-        sticker.addEventListener('mousedown', (e) => { isDragging = true; ox = e.clientX - sticker.offsetLeft; oy = e.clientY - sticker.offsetTop; });
-        window.addEventListener('mousemove', (e) => { if (!isDragging) return; sticker.style.left = (e.clientX - ox) + 'px'; sticker.style.top = (e.clientY - oy) + 'px'; sticker.style.right = 'auto'; });
-        window.addEventListener('mouseup', () => isDragging = false);
-
-        // Scroll Horizontal PC
+        // Scroll horizontal suave en PC
         const container = document.getElementById('scroll-container');
         window.addEventListener('wheel', (e) => {
             if (window.innerWidth > 768) {
                 e.preventDefault();
-                container.scrollLeft += e.deltaY * 2;
+                container.scrollLeft += e.deltaY;
             }
         }, { passive: false });
     </script>
