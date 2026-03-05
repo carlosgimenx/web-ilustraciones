@@ -40,8 +40,8 @@
 
         section { flex-shrink: 0; height: 100%; display: flex; align-items: center; position: relative; }
 
-        /* 4. HERO */
-        .hero { width: 100vw; padding: 8vw; }
+        /* 4. HERO (Espacio ajustado) */
+        .hero { width: 85vw; padding: 5vw; } /* Reducido de 100vw a 85vw para acercar el portfolio */
         .logo { position: absolute; top: 40px; left: 40px; width: 65px; }
         h1 { font-size: 10vw; line-height: 0.85; margin: 0; font-weight: 900; text-transform: uppercase; letter-spacing: -4px; }
         
@@ -50,9 +50,9 @@
         .btn-black { background: #000; color: #fff; }
         .btn-orange { background: #ff4d00; color: #fff; border: 2px solid #ff4d00; }
 
-        /* 5. PORTFOLIO SCRATCH-OFF (CAOS CONTROLADO) */
-        .portfolio-brutal { display: flex; gap: 120px; padding: 0 15vw; align-items: center; }
-        .bg-text { position: absolute; font-size: 20vw; font-weight: 900; color: #e8e8e8; z-index: -1; white-space: nowrap; pointer-events: none; left: 5vw; }
+        /* 5. PORTFOLIO (Gap reducido) */
+        .portfolio-brutal { display: flex; gap: 80px; padding: 0 5vw; align-items: center; }
+        .bg-text { position: absolute; font-size: 20vw; font-weight: 900; color: #e8e8e8; z-index: -1; white-space: nowrap; pointer-events: none; left: 2vw; }
 
         .port-item { 
             position: relative; 
@@ -61,17 +61,15 @@
         }
         
         @media (min-width: 769px) {
-            .port-item:nth-child(1) { transform: translateY(-10%) rotate(-3deg); }
-            .port-item:nth-child(2) { transform: translateY(15%) rotate(2deg); }
-            .port-item:nth-child(3) { transform: translateY(-5%) rotate(-1deg); }
-            .port-item:hover { transform: translateY(0) scale(1.05) rotate(0); z-index: 5; }
+            .port-item:nth-child(1) { transform: translateY(-8%) rotate(-2deg); }
+            .port-item:nth-child(2) { transform: translateY(10%) rotate(1deg); }
+            .port-item:nth-child(3) { transform: translateY(-3%) rotate(-1deg); }
+            .port-item:hover { transform: translateY(0) scale(1.03) rotate(0); z-index: 5; }
         }
 
-        /* Contenedor del lienzo */
         .scratch-container {
             position: relative;
             height: 100%;
-            aspect-ratio: auto;
             border-radius: 4px;
             box-shadow: 0 30px 60px rgba(0,0,0,0.1);
             overflow: hidden;
@@ -84,7 +82,6 @@
             display: block;
         }
 
-        /* El canvas que contiene la imagen en B/N y se va borrando */
         .scratch-canvas {
             position: absolute;
             top: 0; left: 0;
@@ -101,10 +98,11 @@
             body, html { overflow-y: auto; }
             .main-container { display: block; height: auto; }
             section { width: 100vw; height: auto; padding: 80px 20px; flex-direction: column; }
-            .portfolio-brutal { flex-direction: column; gap: 60px; }
+            .hero { width: 100vw; padding: 80px 20px; }
+            .portfolio-brutal { flex-direction: column; gap: 50px; padding: 20px; }
             .port-item { height: auto; width: 100%; transform: none !important; }
             .scratch-container img { width: 100%; height: auto; }
-            .scratch-canvas { display: none; } /* En móvil mejor mostrar color directo */
+            .scratch-canvas { display: none; }
             .contact-title { font-size: 15vw; }
         }
     </style>
@@ -166,16 +164,14 @@
         const container = document.getElementById('scroll-container');
         const bar = document.getElementById('bar');
 
-        // SCROLL Y BARRA
         container.addEventListener('scroll', () => {
             const pct = (container.scrollLeft / (container.scrollWidth - container.clientWidth)) * 100;
             bar.style.width = pct + "%";
         });
 
         function goToContact() {
-            const target = document.getElementById('contact-target');
             if (window.innerWidth > 768) container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
-            else target.scrollIntoView({ behavior: 'smooth' });
+            else document.getElementById('contact-target').scrollIntoView({ behavior: 'smooth' });
         }
 
         window.addEventListener('wheel', (e) => {
@@ -185,7 +181,6 @@
             }
         }, { passive: false });
 
-        // LÓGICA DEL PINCEL PERMANENTE (CANVAS)
         const canvases = document.querySelectorAll('.scratch-canvas');
         
         canvases.forEach(canvas => {
@@ -195,35 +190,29 @@
             function initCanvas() {
                 canvas.width = img.offsetWidth;
                 canvas.height = img.offsetHeight;
-                
-                // Dibujamos la versión B/N en el canvas
-                ctx.filter = 'grayscale(100%) brightness(0.9)';
+                ctx.filter = 'grayscale(100%) brightness(0.8)';
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                
-                // Configuramos el modo "borrador"
                 ctx.globalCompositeOperation = 'destination-out';
-                ctx.lineWidth = 60; // Tamaño del pincel
                 ctx.lineJoin = 'round';
                 ctx.lineCap = 'round';
+                ctx.lineWidth = 150; // PINCEL MUCHO MÁS GRANDE
             }
 
-            // Esperar a que la imagen cargue para tomar sus medidas
             if (img.complete) initCanvas();
             else img.onload = initCanvas;
 
-            // Dibujar al mover el ratón
             canvas.addEventListener('mousemove', (e) => {
                 const rect = canvas.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
                 
                 ctx.beginPath();
-                ctx.arc(x, y, 30, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.moveTo(x, y);
+                ctx.lineTo(x, y);
+                ctx.stroke();
             });
         });
 
-        // RATÓN CUSTOM
         const dot = document.querySelector('.cursor-dot');
         const outline = document.querySelector('.cursor-outline');
         window.addEventListener('mousemove', (e) => {
@@ -233,7 +222,6 @@
             }
         });
 
-        // STICKER DRAG
         const sticker = document.getElementById('sticker');
         let isDragging = false, ox, oy;
         const start = (e) => { isDragging = true; const c = e.touches ? e.touches[0] : e; ox = c.clientX - sticker.offsetLeft; oy = c.clientY - sticker.offsetTop; };
