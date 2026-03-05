@@ -51,22 +51,13 @@
             transition: transform 0.1s ease-out; will-change: transform;
         }
         
-        /* PORTFOLIO */
-        .portfolio-brutal { flex-direction: row; width: auto; gap: 80px; padding: 0 5vw; }
+        /* PORTFOLIO DESKTOP */
+        .portfolio-brutal { flex-direction: row; width: auto; gap: 80px; padding: 0 10vw; justify-content: flex-start; }
         
-        /* NUEVO TEXTO RECTO */
         .scratch-instruction {
-            position: absolute;
-            top: 8%;
-            left: 5vw;
-            color: var(--accent);
-            font-weight: 900;
-            font-size: 2.5rem;
-            font-style: italic;
-            text-transform: uppercase;
-            letter-spacing: -1px;
-            z-index: 10;
-            pointer-events: none;
+            position: absolute; top: 8%; left: 10vw; color: var(--accent);
+            font-weight: 900; font-size: 2.5rem; font-style: italic;
+            text-transform: uppercase; letter-spacing: -1px; z-index: 10; pointer-events: none;
         }
 
         .port-item { position: relative; height: 65vh; transition: 0.4s; opacity: 0; transform: translateY(50px); }
@@ -78,17 +69,37 @@
         /* CONTACTO */
         .contact-section { background: var(--accent); color: #fff; padding: 40px; }
         .contact-title { font-size: 8vw; font-weight: 900; line-height: 0.8; margin-bottom: 40px; }
-        .whatsapp-btn { background: #fff; color: var(--accent); font-size: 1.5rem; padding: 25px 60px; border-radius: 100px; text-decoration: none; font-weight: 900; margin-bottom: 20px; display: inline-block; transition: transform 0.3s; }
-        .whatsapp-btn:hover { transform: scale(1.05); }
+        .whatsapp-btn { background: #fff; color: var(--accent); font-size: 1.5rem; padding: 25px 60px; border-radius: 100px; text-decoration: none; font-weight: 900; margin-bottom: 20px; display: inline-block; }
         .email-link { color: #ffffff; text-decoration: none; font-weight: 900; font-size: 1.2rem; letter-spacing: 1px; }
 
         /* INTERRUPTOR Y STICKER */
         .theme-switch { position: fixed; bottom: 30px; left: 30px; z-index: 10005; background: var(--text); color: var(--bg); padding: 8px 15px; border-radius: 50px; font-weight: 900; font-size: 0.7rem; cursor: pointer; }
         .sticker { position: fixed; top: 15%; right: 5%; width: 110px; z-index: 10001; cursor: grab; transform: rotate(-10deg); }
 
+        /* --- ARREGLO MÓVIL CRÍTICO --- */
         @media (max-width: 768px) {
-            .main-container { display: block; height: auto; }
-            section { width: 100%; height: auto; min-height: 100vh; padding: 80px 20px; }
+            .main-container { display: block; height: auto; overflow-y: auto; }
+            section { width: 100%; height: auto; min-height: 100vh; padding: 100px 20px; }
+            
+            .portfolio-brutal { 
+                flex-direction: column !important; /* Forzamos columna */
+                width: 100% !important; 
+                gap: 50px; /* Espacio entre fotos */
+                padding: 50px 20px;
+            }
+
+            .port-item { 
+                height: auto; /* Que la altura dependa de la foto */
+                width: 100%; 
+                opacity: 1; 
+                transform: none; 
+            }
+            
+            .scratch-container img { 
+                width: 100%; /* La foto ocupa el ancho del móvil */
+                height: auto; 
+            }
+
             .scratch-instruction { display: none; }
             h1 { font-size: 18vw; transform: none !important; }
             .contact-title { font-size: 15vw; }
@@ -135,7 +146,6 @@
     </div>
 
     <script>
-        // PARALLAX NOMBRE
         const heroName = document.getElementById('hero-name');
         window.addEventListener('mousemove', (e) => {
             if (window.innerWidth > 768) {
@@ -154,10 +164,17 @@
 
         const container = document.getElementById('scroll-container');
         const bar = document.getElementById('bar');
-        container.addEventListener('scroll', () => {
-            let pct = (container.scrollLeft / (container.scrollWidth - container.clientWidth)) * 100;
+        
+        // Scroll horizontal en PC, vertical en móvil
+        const updateProgress = () => {
+            let pct = (window.innerWidth > 768) 
+                ? (container.scrollLeft / (container.scrollWidth - container.clientWidth)) * 100
+                : (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
             bar.style.width = pct + "%";
-        });
+        };
+
+        container.addEventListener('scroll', updateProgress);
+        window.addEventListener('scroll', updateProgress);
 
         window.addEventListener('wheel', (e) => {
             if (window.innerWidth > 768 && e.deltaY !== 0) {
@@ -170,7 +187,6 @@
         }, { threshold: 0.1 });
         document.querySelectorAll('.port-item').forEach(item => observer.observe(item));
 
-        // STICKER DRAG
         const sticker = document.getElementById('sticker');
         let isDragging = false, totalDist = 0, lastX, lastY, ox, oy;
         sticker.addEventListener('mousedown', (e) => { isDragging = true; ox = e.clientX - sticker.offsetLeft; oy = e.clientY - sticker.offsetTop; lastX = e.clientX; lastY = e.clientY; });
@@ -183,7 +199,6 @@
         });
         window.addEventListener('mouseup', () => isDragging = false);
 
-        // CANVAS
         const canvases = document.querySelectorAll('.scratch-canvas');
         canvases.forEach(canvas => {
             const ctx = canvas.getContext('2d');
