@@ -8,124 +8,128 @@
         /* 1. BASE */
         body, html {
             margin: 0; padding: 0; width: 100%; min-height: 100%;
-            font-family: 'Inter', sans-serif; background-color: #fff;
+            font-family: 'Inter', sans-serif; background-color: #f0f0f0; 
             overflow-x: hidden;
         }
 
-        /* 2. BARRA DE PROGRESO Y CURSOR */
         .progress-bar {
             position: fixed; top: 0; left: 0; height: 6px;
             background: #ff4d00; width: 0%; z-index: 10002;
             transition: width 0.1s ease-out;
         }
 
-        .cursor-brush {
-            width: 40px; height: 40px; background: #000;
-            border-radius: 50%; position: fixed; pointer-events: none;
-            z-index: 10005; transform: translate(-50%, -50%);
-            mix-blend-mode: difference; /* Esto hace que el cursor sea blanco sobre negro */
+        @media (min-width: 1024px) {
+            * { cursor: none !important; }
+            .cursor-dot { width: 8px; height: 8px; background: #ff4d00; position: fixed; pointer-events: none; z-index: 10000; border-radius: 50%; transform: translate(-50%, -50%); }
+            .cursor-outline { width: 40px; height: 40px; border: 2px solid #000; position: fixed; pointer-events: none; z-index: 9999; border-radius: 50%; transform: translate(-50%, -50%); transition: all 0.1s ease-out; }
         }
 
-        /* 3. EL LIENZO (Fondo interactivo) */
-        #painting-canvas {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 2; pointer-events: none;
+        /* 2. STICKER (Ajustado para centro en móvil) */
+        .sticker { 
+            position: fixed; top: 15%; right: 5%; width: 110px; z-index: 10001;
+            cursor: grab; transform: rotate(-10deg); user-select: none;
         }
+        .sticker img { width: 100%; height: auto; pointer-events: none; }
+        .sticker-label { background: #000; color: #fff; font-size: 0.5rem; padding: 3px 6px; font-weight: 900; text-align: center; }
 
-        /* 4. CONTENEDOR PRINCIPAL */
+        /* 3. CONTENEDOR */
         .main-container {
-            position: relative; z-index: 10;
             display: flex; width: 100%; height: 100vh;
             overflow-x: auto; overflow-y: hidden; scroll-behavior: smooth;
         }
 
         section { flex-shrink: 0; height: 100%; display: flex; align-items: center; position: relative; width: 100vw; }
 
-        /* 5. TEXTOS CON EFECTO INVERSIÓN */
-        h1, .bg-text {
-            color: #000; font-weight: 900; text-transform: uppercase;
-            mix-blend-mode: difference; /* MAGIA: cambia a blanco sobre el trazo negro */
-            pointer-events: none;
+        /* 4. HERO */
+        .hero { width: 85vw; padding: 5vw; }
+        .logo { position: absolute; top: 40px; left: 40px; width: 65px; }
+        h1 { font-size: 10vw; line-height: 0.85; margin: 0; font-weight: 900; text-transform: uppercase; letter-spacing: -4px; }
+        
+        .nav-buttons { display: flex; gap: 15px; margin-top: 30px; }
+        .btn { padding: 18px 35px; border-radius: 50px; font-weight: 900; text-decoration: none; text-transform: uppercase; font-size: 0.8rem; transition: 0.3s; display: inline-block; }
+        .btn-black { background: #000; color: #fff; }
+        .btn-orange { background: #ff4d00; color: #fff; border: 2px solid #ff4d00; }
+
+        /* 5. PORTFOLIO */
+        .portfolio-brutal { display: flex; gap: 80px; padding: 0 5vw; align-items: center; width: auto; }
+        .bg-text { position: absolute; font-size: 20vw; font-weight: 900; color: #e8e8e8; z-index: -1; white-space: nowrap; pointer-events: none; left: 2vw; }
+
+        .port-item { position: relative; height: 65vh; transition: transform 0.4s ease-out; }
+        
+        @media (min-width: 769px) {
+            .port-item:nth-child(1) { transform: translateY(-8%) rotate(-2deg); }
+            .port-item:nth-child(2) { transform: translateY(10%) rotate(1deg); }
+            .port-item:nth-child(3) { transform: translateY(-3%) rotate(-1deg); }
+            .port-item:hover { transform: translateY(0) scale(1.03) rotate(0); z-index: 5; }
         }
 
-        h1 { font-size: 10vw; line-height: 0.85; margin: 0; letter-spacing: -4px; padding-left: 5vw; }
-        .bg-text { position: absolute; font-size: 20vw; color: #333; opacity: 0.1; z-index: -1; white-space: nowrap; left: 2vw; }
-
-        /* 6. PORTFOLIO */
-        .portfolio-brutal { display: flex; gap: 80px; padding: 0 10vw; align-items: center; width: auto; }
-        .port-item { position: relative; height: 65vh; z-index: 20; transition: transform 0.3s; }
-        .port-item:hover { transform: scale(1.02); }
-        
-        .scratch-container { position: relative; height: 100%; border-radius: 4px; overflow: hidden; background: #000; box-shadow: 0 30px 60px rgba(0,0,0,0.1); }
-        .scratch-container img { height: 100%; width: auto; display: block; pointer-events: none; }
+        .scratch-container { position: relative; height: 100%; border-radius: 4px; box-shadow: 0 30px 60px rgba(0,0,0,0.1); overflow: hidden; background-color: #000; }
+        .scratch-container img { height: 100%; width: auto; display: block; }
         .scratch-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; }
 
-        /* 7. CONTACTO (Naranja original) */
-        .contact-section { 
-            width: 100vw; background: #ff4d00; color: #fff; 
-            flex-direction: column; justify-content: center; align-items: center; text-align: center;
-            z-index: 100; /* Para que el lienzo no ensucie el naranja si no quieres */
-        }
+        /* 6. CONTACTO (Centrado mejorado) */
+        .contact-section { width: 100vw; background: #ff4d00; color: #fff; flex-direction: column; justify-content: center; text-align: center; }
         .contact-title { font-size: 8vw; font-weight: 900; line-height: 0.8; margin-bottom: 40px; text-transform: uppercase; }
-        .whatsapp-btn { background: #000; color: #fff; padding: 25px 60px; border-radius: 100px; text-decoration: none; font-weight: 900; font-size: 1.5rem; transition: 0.3s; }
-        .whatsapp-btn:hover { transform: scale(1.1); background: #fff; color: #000; }
+        .whatsapp-btn { background: #fff; color: #ff4d00; font-size: 1.5rem; padding: 25px 60px; border-radius: 100px; text-decoration: none; font-weight: 900; transition: 0.3s; }
 
-        /* STICKER */
-        .sticker { position: fixed; top: 15%; right: 5%; width: 110px; z-index: 10001; cursor: grab; transform: rotate(-10deg); user-select: none; }
-        .sticker img { width: 100%; height: auto; pointer-events: none; }
-
-        .clear-btn {
-            position: fixed; bottom: 20px; left: 20px; z-index: 10006;
-            background: #000; color: #fff; border: none; padding: 12px 20px;
-            font-size: 0.8rem; font-weight: 900; cursor: pointer; border-radius: 50px;
-        }
-
-        /* MÓVIL */
+        /* REGLAS MÓVIL CORREGIDAS */
         @media (max-width: 768px) {
             body, html { overflow-y: auto; overflow-x: hidden; }
-            .main-container { display: block; height: auto; }
-            section { width: 100%; height: auto; padding: 60px 20px; flex-direction: column; align-items: center; }
-            h1 { font-size: 18vw; padding-left: 0; text-align: center; margin-top: 100px; }
-            .portfolio-brutal { flex-direction: column; gap: 40px; padding: 20px; width: 100%; }
-            .port-item { width: 100%; height: auto; }
-            .port-item img { width: 100%; height: auto; }
+            .main-container { display: block; height: auto; width: 100%; overflow: visible; }
+            
+            section { width: 100%; height: auto; padding: 40px 20px; flex-direction: column; overflow: hidden; align-items: center; }
+            
+            .hero { min-height: 60vh; padding-top: 100px; text-align: center; justify-content: center; }
+            .nav-buttons { justify-content: center; width: 100%; }
+            
+            .portfolio-brutal { gap: 30px; padding: 10px 20px; margin-top: -20px; width: 100%; align-items: center; }
+            .port-item { height: auto; width: 100%; transform: none !important; }
+            .scratch-container img { width: 100%; height: auto; }
             .scratch-canvas { display: none; }
-            .contact-title { font-size: 14vw; }
-            .sticker { top: 50%; left: 50%; width: 90px; }
+            
+            .contact-section { min-height: 100vh; padding: 40px 20px; align-items: center; justify-content: center; display: flex; }
+            .contact-title { font-size: 14vw; text-align: center; margin-left: 0; margin-right: 0; width: 100%; }
+            .whatsapp-btn { font-size: 1.2rem; padding: 20px 40px; width: auto; min-width: 200px; }
+            
+            /* STICKER CENTRADO AL INICIO EN MÓVIL */
+            .sticker { 
+                top: 50%; left: 50%; 
+                right: auto;
+                transform: translate(-50%, -50%) rotate(-10deg); 
+                width: 90px;
+            }
+            
+            h1 { font-size: 18vw; text-align: center; }
         }
     </style>
 </head>
 <body>
 
     <div class="progress-bar" id="bar"></div>
-    <canvas id="painting-canvas"></canvas>
-    <div class="cursor-brush"></div>
-    <button class="clear-btn" onclick="clearCanvas()">BORRAR RASTRO</button>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
 
     <div id="sticker" class="sticker">
         <img src="./img/sticker-final.webp" alt="Sticker">
+        <div class="sticker-label">MUEVE EL ARTE</div>
     </div>
 
     <div class="main-container" id="scroll-container">
         
         <section class="hero">
+            <img src="./img/tu-logo.webp" alt="Logo" class="logo">
             <h1>CARLOS<br>GIMENO</h1>
+            <div class="nav-buttons">
+                <a href="https://wa.me/34670898357" target="_blank" class="btn btn-black">WhatsApp</a>
+                <a href="javascript:void(0)" class="btn btn-orange" onclick="goToContact()">¿Saber más?</a>
+            </div>
         </section>
 
         <section class="portfolio-brutal">
             <div class="bg-text">RECENT WORK</div>
-            <div class="port-item">
-                <div class="scratch-container">
-                    <img src="./img/ilustracion-1.webp" alt="1">
-                    <canvas class="scratch-canvas"></canvas>
-                </div>
-            </div>
-            <div class="port-item">
-                <div class="scratch-container">
-                    <img src="./img/ilustracion-2.webp" alt="2">
-                    <canvas class="scratch-canvas"></canvas>
-                </div>
-            </div>
+            <div class="port-item"><div class="scratch-container"><img src="./img/ilustracion-1.webp" alt="1"><canvas class="scratch-canvas"></canvas></div></div>
+            <div class="port-item"><div class="scratch-container"><img src="./img/ilustracion-2.webp" alt="2"><canvas class="scratch-canvas"></canvas></div></div>
+            <div class="port-item"><div class="scratch-container"><img src="./img/ilustracion-3.webp" alt="3"><canvas class="scratch-canvas"></canvas></div></div>
         </section>
 
         <section class="contact-section" id="contact-target">
@@ -135,83 +139,84 @@
     </div>
 
     <script>
-        const canvas = document.getElementById('painting-canvas');
-        const ctx = canvas.getContext('2d');
-        const brush = document.querySelector('.cursor-brush');
         const container = document.getElementById('scroll-container');
         const bar = document.getElementById('bar');
 
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            ctx.lineCap = 'round';
-            ctx.lineWidth = 50;
-            ctx.strokeStyle = '#000';
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        // PINTAR FONDO
-        let lastX, lastY;
-        window.addEventListener('mousemove', (e) => {
-            brush.style.left = e.clientX + 'px';
-            brush.style.top = e.clientY + 'px';
-
-            ctx.beginPath();
-            ctx.moveTo(lastX || e.clientX, lastY || e.clientY);
-            ctx.lineTo(e.clientX, e.clientY);
-            ctx.stroke();
-            [lastX, lastY] = [e.clientX, e.clientY];
-        });
-
-        function clearCanvas() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
-
-        // BARRA DE PROGRESO
-        container.addEventListener('scroll', () => {
-            let pct = (container.scrollLeft / (container.scrollWidth - container.clientWidth)) * 100;
-            bar.style.width = pct + "%";
-        });
-
-        // SCRATCH EFFECT
-        const sCanvases = document.querySelectorAll('.scratch-canvas');
-        sCanvases.forEach(sc => {
-            const sCtx = sc.getContext('2d');
-            const img = sc.previousElementSibling;
-            function init() {
-                sc.width = img.offsetWidth; sc.height = img.offsetHeight;
-                sCtx.filter = 'grayscale(100%) brightness(0.8)';
-                sCtx.drawImage(img, 0, 0, sc.width, sc.height);
-                sCtx.globalCompositeOperation = 'destination-out';
-                sCtx.lineWidth = 100; sCtx.lineCap = 'round';
+        const updateProgress = () => {
+            let pct = 0;
+            if (window.innerWidth > 768) {
+                pct = (container.scrollLeft / (container.scrollWidth - container.clientWidth)) * 100;
+            } else {
+                pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
             }
-            if (img.complete) init(); else img.onload = init;
-            sc.addEventListener('mousemove', (e) => {
-                const r = sc.getBoundingClientRect();
-                sCtx.beginPath();
-                sCtx.moveTo(e.clientX - r.left, e.clientY - r.top);
-                sCtx.lineTo(e.clientX - r.left, e.clientY - r.top);
-                sCtx.stroke();
+            bar.style.width = pct + "%";
+        };
+
+        container.addEventListener('scroll', updateProgress);
+        window.addEventListener('scroll', updateProgress);
+
+        function goToContact() {
+            const target = document.getElementById('contact-target');
+            if (window.innerWidth > 768) container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
+            else target.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        window.addEventListener('wheel', (e) => {
+            if (window.innerWidth > 768 && e.deltaY !== 0) {
+                e.preventDefault();
+                container.scrollLeft += (e.deltaY * 3);
+            }
+        }, { passive: false });
+
+        const canvases = document.querySelectorAll('.scratch-canvas');
+        canvases.forEach(canvas => {
+            const ctx = canvas.getContext('2d');
+            const img = canvas.previousElementSibling;
+            function initCanvas() {
+                canvas.width = img.offsetWidth; canvas.height = img.offsetHeight;
+                ctx.filter = 'grayscale(100%) brightness(0.8)';
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.lineWidth = 150; ctx.lineCap = 'round';
+            }
+            if (img.complete) initCanvas(); else img.onload = initCanvas;
+            canvas.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left; const y = e.clientY - rect.top;
+                ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y); ctx.stroke();
             });
         });
 
-        // STICKER DRAG
+        const dot = document.querySelector('.cursor-dot');
+        const outline = document.querySelector('.cursor-outline');
+        window.addEventListener('mousemove', (e) => {
+            if (window.innerWidth > 768 && dot) {
+                dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px';
+                outline.style.left = e.clientX + 'px'; outline.style.top = e.clientY + 'px';
+            }
+        });
+
         const sticker = document.getElementById('sticker');
         let isDragging = false, ox, oy;
-        const start = (e) => { isDragging = true; const c = e.touches ? e.touches[0] : e; ox = c.clientX - sticker.offsetLeft; oy = c.clientY - sticker.offsetTop; };
-        const move = (e) => { if (!isDragging) return; const c = e.touches ? e.touches[0] : e; sticker.style.left = (c.clientX - ox) + 'px'; sticker.style.top = (c.clientY - oy) + 'px'; sticker.style.right = 'auto'; };
-        sticker.addEventListener('mousedown', start); sticker.addEventListener('touchstart', start);
-        window.addEventListener('mousemove', move); window.addEventListener('touchmove', move);
+        
+        const start = (e) => { 
+            isDragging = true; 
+            const c = e.touches ? e.touches[0] : e; 
+            ox = c.clientX - sticker.offsetLeft; oy = c.clientY - sticker.offsetTop; 
+            // Al empezar a mover, quitamos el centrado de CSS para que no "salte"
+            sticker.style.transform = 'rotate(-10deg)'; 
+        };
+        const move = (e) => { 
+            if (!isDragging) return; 
+            e.preventDefault(); 
+            const c = e.touches ? e.touches[0] : e; 
+            sticker.style.top = (c.clientY - oy) + 'px';
+            sticker.style.left = (c.clientX - ox) + 'px';
+            sticker.style.right = 'auto'; 
+        };
+        sticker.addEventListener('mousedown', start); sticker.addEventListener('touchstart', start, {passive: false});
+        window.addEventListener('mousemove', move); window.addEventListener('touchmove', move, {passive: false});
         window.addEventListener('mouseup', () => isDragging = false); window.addEventListener('touchend', () => isDragging = false);
-
-        // SCROLL HORIZONTAL
-        window.addEventListener('wheel', (e) => {
-            if (window.innerWidth > 768) {
-                e.preventDefault();
-                container.scrollLeft += e.deltaY;
-            }
-        }, { passive: false });
     </script>
 </body>
 </html>
