@@ -2,14 +2,14 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>C. Gimeno | Ilustrador</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>C. Gimeno | Portfolio v0.6.2</title>
     <style>
         /* 1. BASE */
         body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
+            margin: 0; padding: 0; width: 100%; min-height: 100%;
             font-family: 'Inter', sans-serif; background-color: #f0f0f0; 
-            overflow: hidden;
+            overflow-x: hidden; /* Evita el baile lateral en móvil */
         }
 
         .progress-bar {
@@ -32,16 +32,17 @@
         .sticker img { width: 100%; height: auto; pointer-events: none; }
         .sticker-label { background: #000; color: #fff; font-size: 0.5rem; padding: 3px 6px; font-weight: 900; text-align: center; }
 
-        /* 3. CONTENEDOR */
+        /* 3. CONTENEDOR (Horizontal en PC, Vertical en Móvil) */
         .main-container {
-            display: flex; width: 100vw; height: 100vh;
+            display: flex; width: 100%; height: 100vh;
             overflow-x: auto; overflow-y: hidden; scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
         }
 
-        section { flex-shrink: 0; height: 100%; display: flex; align-items: center; position: relative; }
+        section { flex-shrink: 0; height: 100%; display: flex; align-items: center; position: relative; width: 100vw; }
 
-        /* 4. HERO (Espacio ajustado) */
-        .hero { width: 85vw; padding: 5vw; } /* Reducido de 100vw a 85vw para acercar el portfolio */
+        /* 4. HERO */
+        .hero { width: 85vw; padding: 5vw; }
         .logo { position: absolute; top: 40px; left: 40px; width: 65px; }
         h1 { font-size: 10vw; line-height: 0.85; margin: 0; font-weight: 900; text-transform: uppercase; letter-spacing: -4px; }
         
@@ -50,15 +51,11 @@
         .btn-black { background: #000; color: #fff; }
         .btn-orange { background: #ff4d00; color: #fff; border: 2px solid #ff4d00; }
 
-        /* 5. PORTFOLIO (Gap reducido) */
-        .portfolio-brutal { display: flex; gap: 80px; padding: 0 5vw; align-items: center; }
+        /* 5. PORTFOLIO */
+        .portfolio-brutal { display: flex; gap: 80px; padding: 0 5vw; align-items: center; width: auto; }
         .bg-text { position: absolute; font-size: 20vw; font-weight: 900; color: #e8e8e8; z-index: -1; white-space: nowrap; pointer-events: none; left: 2vw; }
 
-        .port-item { 
-            position: relative; 
-            height: 65vh; 
-            transition: transform 0.4s ease-out;
-        }
+        .port-item { position: relative; height: 65vh; transition: transform 0.4s ease-out; }
         
         @media (min-width: 769px) {
             .port-item:nth-child(1) { transform: translateY(-8%) rotate(-2deg); }
@@ -68,42 +65,30 @@
         }
 
         .scratch-container {
-            position: relative;
-            height: 100%;
-            border-radius: 4px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.1);
-            overflow: hidden;
-            background-color: #000;
+            position: relative; height: 100%; border-radius: 4px; box-shadow: 0 30px 60px rgba(0,0,0,0.1); overflow: hidden; background-color: #000;
         }
-
-        .scratch-container img {
-            height: 100%;
-            width: auto;
-            display: block;
-        }
-
-        .scratch-canvas {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            cursor: crosshair;
-        }
+        .scratch-container img { height: 100%; width: auto; display: block; }
+        .scratch-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; }
 
         /* 6. CONTACTO */
         .contact-section { width: 100vw; background: #ff4d00; color: #fff; flex-direction: column; justify-content: center; text-align: center; }
         .contact-title { font-size: 8vw; font-weight: 900; line-height: 0.8; margin-bottom: 40px; text-transform: uppercase; }
-        .whatsapp-btn { background: #fff; color: #ff4d00; font-size: 1.5rem; padding: 25px 60px; border-radius: 100px; text-decoration: none; font-weight: 900; transition: 0.3s; }
+        .whatsapp-btn { background: #fff; color: #ff4d00; font-size: 1.5rem; padding: 25px 60px; border-radius: 100px; text-decoration: none; font-weight: 900; transition: 0.3s; box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
 
+        /* REGLAS ESPECÍFICAS PARA MÓVIL */
         @media (max-width: 768px) {
-            body, html { overflow-y: auto; }
-            .main-container { display: block; height: auto; }
-            section { width: 100vw; height: auto; padding: 80px 20px; flex-direction: column; }
-            .hero { width: 100vw; padding: 80px 20px; }
-            .portfolio-brutal { flex-direction: column; gap: 50px; padding: 20px; }
+            body, html { overflow-y: auto; overflow-x: hidden; position: relative; }
+            .main-container { display: block; height: auto; width: 100%; overflow: visible; }
+            section { width: 100%; height: auto; min-height: 80vh; padding: 60px 20px; flex-direction: column; overflow: hidden; }
+            .hero { width: 100%; padding-top: 120px; box-sizing: border-box; }
+            .portfolio-brutal { flex-direction: column; gap: 40px; padding: 20px; width: 100%; box-sizing: border-box; }
             .port-item { height: auto; width: 100%; transform: none !important; }
+            .scratch-container { width: 100%; height: auto; }
             .scratch-container img { width: 100%; height: auto; }
-            .scratch-canvas { display: none; }
-            .contact-title { font-size: 15vw; }
+            .scratch-canvas { display: none; } /* Desactivado en móvil para fluidez */
+            .contact-section { min-height: 100vh; padding: 40px 20px; }
+            .contact-title { font-size: 14vw; }
+            .sticker { width: 70px; top: 20px; right: 20px; }
         }
     </style>
 </head>
@@ -131,27 +116,9 @@
 
         <section class="portfolio-brutal">
             <div class="bg-text">RECENT WORK</div>
-            
-            <div class="port-item">
-                <div class="scratch-container">
-                    <img src="./img/ilustracion-1.webp" alt="Obra 1">
-                    <canvas class="scratch-canvas"></canvas>
-                </div>
-            </div>
-            
-            <div class="port-item">
-                <div class="scratch-container">
-                    <img src="./img/ilustracion-2.webp" alt="Obra 2">
-                    <canvas class="scratch-canvas"></canvas>
-                </div>
-            </div>
-            
-            <div class="port-item">
-                <div class="scratch-container">
-                    <img src="./img/ilustracion-3.webp" alt="Obra 3">
-                    <canvas class="scratch-canvas"></canvas>
-                </div>
-            </div>
+            <div class="port-item"><div class="scratch-container"><img src="./img/ilustracion-1.webp" alt="1"><canvas class="scratch-canvas"></canvas></div></div>
+            <div class="port-item"><div class="scratch-container"><img src="./img/ilustracion-2.webp" alt="2"><canvas class="scratch-canvas"></canvas></div></div>
+            <div class="port-item"><div class="scratch-container"><img src="./img/ilustracion-3.webp" alt="3"><canvas class="scratch-canvas"></canvas></div></div>
         </section>
 
         <section class="contact-section" id="contact-target">
@@ -164,16 +131,30 @@
         const container = document.getElementById('scroll-container');
         const bar = document.getElementById('bar');
 
-        container.addEventListener('scroll', () => {
-            const pct = (container.scrollLeft / (container.scrollWidth - container.clientWidth)) * 100;
+        // BARRA DE PROGRESO ADAPTATIVA (Horizontal en PC, Vertical en Móvil)
+        const updateProgress = () => {
+            let pct = 0;
+            if (window.innerWidth > 768) {
+                pct = (container.scrollLeft / (container.scrollWidth - container.clientWidth)) * 100;
+            } else {
+                pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            }
             bar.style.width = pct + "%";
-        });
+        };
+
+        container.addEventListener('scroll', updateProgress);
+        window.addEventListener('scroll', updateProgress);
 
         function goToContact() {
-            if (window.innerWidth > 768) container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
-            else document.getElementById('contact-target').scrollIntoView({ behavior: 'smooth' });
+            const target = document.getElementById('contact-target');
+            if (window.innerWidth > 768) {
+                container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
+            } else {
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
         }
 
+        // SCROLL HORIZONTAL SOLO PC
         window.addEventListener('wheel', (e) => {
             if (window.innerWidth > 768 && e.deltaY !== 0) {
                 e.preventDefault();
@@ -181,51 +162,41 @@
             }
         }, { passive: false });
 
+        // PINCEL (SCRATCH)
         const canvases = document.querySelectorAll('.scratch-canvas');
-        
         canvases.forEach(canvas => {
             const ctx = canvas.getContext('2d');
             const img = canvas.previousElementSibling;
-
             function initCanvas() {
-                canvas.width = img.offsetWidth;
-                canvas.height = img.offsetHeight;
+                canvas.width = img.offsetWidth; canvas.height = img.offsetHeight;
                 ctx.filter = 'grayscale(100%) brightness(0.8)';
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                 ctx.globalCompositeOperation = 'destination-out';
-                ctx.lineJoin = 'round';
-                ctx.lineCap = 'round';
-                ctx.lineWidth = 150; // PINCEL MUCHO MÁS GRANDE
+                ctx.lineWidth = 150; ctx.lineCap = 'round';
             }
-
-            if (img.complete) initCanvas();
-            else img.onload = initCanvas;
-
+            if (img.complete) initCanvas(); else img.onload = initCanvas;
             canvas.addEventListener('mousemove', (e) => {
                 const rect = canvas.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                ctx.beginPath();
-                ctx.moveTo(x, y);
-                ctx.lineTo(x, y);
-                ctx.stroke();
+                const x = e.clientX - rect.left; const y = e.clientY - rect.top;
+                ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y); ctx.stroke();
             });
         });
 
+        // CURSOR PC
         const dot = document.querySelector('.cursor-dot');
         const outline = document.querySelector('.cursor-outline');
         window.addEventListener('mousemove', (e) => {
-            if (window.innerWidth > 768) {
+            if (window.innerWidth > 768 && dot) {
                 dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px';
                 outline.style.left = e.clientX + 'px'; outline.style.top = e.clientY + 'px';
             }
         });
 
+        // STICKER DRAG
         const sticker = document.getElementById('sticker');
         let isDragging = false, ox, oy;
         const start = (e) => { isDragging = true; const c = e.touches ? e.touches[0] : e; ox = c.clientX - sticker.offsetLeft; oy = c.clientY - sticker.offsetTop; };
-        const move = (e) => { if (!isDragging) return; e.preventDefault(); const c = e.touches ? e.touches[0] : e; sticker.style.left = (c.clientX - ox) + 'px'; sticker.style.top = (c.clientY - oy) + 'px'; sticker.style.right = 'auto'; };
+        const move = (e) => { if (!isDragging) return; const c = e.touches ? e.touches[0] : e; sticker.style.left = (c.clientX - ox) + 'px'; sticker.style.top = (c.clientY - oy) + 'px'; sticker.style.right = 'auto'; };
         sticker.addEventListener('mousedown', start); sticker.addEventListener('touchstart', start, {passive: false});
         window.addEventListener('mousemove', move); window.addEventListener('touchmove', move, {passive: false});
         window.addEventListener('mouseup', () => isDragging = false); window.addEventListener('touchend', () => isDragging = false);
