@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C. Gimeno | Portfolio v0.3</title>
+    <style>
+        /* 1. ESTILO BASE Y RATÓN */
+        body, html {
+            margin: 0; padding: 0; height: 100%; width: 100%;
+            font-family: 'Inter', sans-serif; background-color: #f0f0f0; 
+            overflow: hidden;
+        }
+
+        /* Barra de progreso superior */
+        .progress-bar {
+            position: fixed; top: 0; left: 0; height: 6px;
+            background: #ff4d00; width: 0%; z-index: 10002;
+            transition: width 0.1s ease-out;
+        }
+
+        @media (min-width: 1024px) {
+            * { cursor: none !important; }
+            .cursor-dot { width: 8px; height: 8px; background: #ff4d00; position: fixed; pointer-events: none; z-index: 10000; border-radius: 50%; transform: translate(-50%, -50%); }
+            .cursor-outline { width: 40px; height: 40px; border: 2px solid #000; position: fixed; pointer-events: none; z-index: 9999; border-radius: 50%; transform: translate(-50%, -50%); transition: all 0.1s ease-out; }
+        }
+
+        /* 2. CONTENEDOR HORIZONTAL */
+        .main-container {
+            display: flex; width: 100vw; height: 100vh;
+            overflow-x: auto; overflow-y: hidden; scroll-behavior: smooth; 
+            scrollbar-width: thin; scrollbar-color: #ff4d00 #eee;
+        }
+
+        /* Barra de scroll visual para Chrome/Safari */
+        .main-container::-webkit-scrollbar { height: 6px; display: block; }
+        .main-container::-webkit-scrollbar-thumb { background: #ff4d00; border-radius: 10px; }
+
+        @media (max-width: 768px) {
+            .main-container { flex-direction: column; height: auto; overflow-y: auto; overflow-x: hidden; }
+        }
+
+        section { flex-shrink: 0; height: 100%; display: flex; align-items: center; box-sizing: border-box; position: relative; }
+
+        /* 3. HERO */
+        .hero { width: 100vw; padding: 8vw; }
+        .logo { position: absolute; top: 40px; left: 40px; width: 65px; }
+        h1 { font-size: 10vw; line-height: 0.85; margin: 0; font-weight: 900; text-transform: uppercase; letter-spacing: -4px; }
+        
+        .nav-buttons { display: flex; gap: 15px; margin-top: 30px; }
+        .btn { padding: 18px 35px; border-radius: 50px; font-weight: 900; text-decoration: none; text-transform: uppercase; font-size: 0.8rem; transition: 0.3s; }
+        .btn-black { background: #000; color: #fff; }
+        .btn-orange { background: #ff4d00; color: #fff; border: 2px solid #ff4d00; }
+
+        /* 4. PORTFOLIO BRUTAL (Con tus imágenes de GitHub) */
+        .portfolio-brutal { display: flex; gap: 60px; padding: 0 150px; align-items: center; }
+        .bg-text { position: absolute; font-size: 25vw; font-weight: 900; color: #e8e8e8; z-index: -1; white-space: nowrap; pointer-events: none; }
+
+        .port-item { position: relative; height: 70vh; transition: 0.5s cubic-bezier(0.165, 0.84, 0.44, 1); }
+        .port-item img { height: 100%; width: auto; border-radius: 2px; box-shadow: 0 50px 100px rgba(0,0,0,0.15); }
+        
+        @media (min-width: 769px) {
+            .port-item:nth-child(1) { transform: translateY(-15%); margin-right: -120px; z-index: 2; }
+            .port-item:nth-child(2) { transform: translateY(10%); z-index: 1; }
+            .port-item:nth-child(3) { transform: translateY(-5%); margin-left: -100px; z-index: 3; }
+            .port-item:hover { z-index: 10; transform: scale(1.05) translateY(0); }
+        }
+
+        /* 5. PACKS */
+        .packs-section { width: 100vw; background: #000; color: #fff; padding: 5vw; flex-direction: column; justify-content: center; }
+        .packs-grid { display: flex; gap: 20px; width: 100%; max-width: 1000px; margin-top: 40px; }
+        .pack-card { flex: 1; background: #111; padding: 30px; border: 1px solid #333; border-radius: 15px; text-align: center; transition: 0.3s; cursor: pointer; }
+        .pack-card:hover { border-color: #ff4d00; }
+        .featured { border: 2px solid #ff4d00; background: #1a1a1a; transform: scale(1.05); }
+
+        /* 6. STICKER */
+        .sticker { position: fixed; top: 15%; right: 5%; width: 110px; z-index: 50; cursor: grab; transform: rotate(-10deg); }
+        .sticker img { width: 100%; height: auto; }
+        .sticker-label { background: #000; color: #fff; font-size: 0.5rem; padding: 3px 6px; font-weight: 900; text-align: center; }
+
+        @media (max-width: 768px) {
+            section { width: 100vw; height: auto; padding: 80px 20px; flex-direction: column; }
+            .portfolio-brutal { flex-direction: column; padding: 20px; gap: 60px; }
+            .port-item { height: auto; width: 100%; transform: none !important; margin: 0 !important; }
+            .port-item img { width: 100%; height: auto; }
+            .packs-grid { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="progress-bar" id="bar"></div>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <div id="sticker" class="sticker">
+        <img src="img/sticker-roma.webp" alt="Roma">
+        <div class="sticker-label">MUEVE EL ARTE</div>
+    </div>
+
+    <div class="main-container" id="scroll-container">
+        
+        <section class="hero">
+            <img src="img/tu-logo.webp" alt="Logo" class="logo">
+            <h1>CARLOS<br>GIMENO</h1>
+            <div class="nav-buttons">
+                <a href="mailto:hola@cgimeno.com" class="btn btn-black">Hablemos</a>
+                <a href="javascript:void(0)" class="btn btn-orange" onclick="goToPacks()">Ver Packs</a>
+            </div>
+        </section>
+
+        <section class="portfolio-brutal">
+            <div class="bg-text">ILUSTRACIÓN</div>
+            
+            <div class="port-item">
+                <img src="img/ilustracion-1.webp" alt="Obra 1">
+            </div>
+            <div class="port-item">
+                <img src="img/ilustracion-2.webp" alt="Obra 2">
+            </div>
+            <div class="port-item">
+                <img src="img/ilustracion-3.webp" alt="Obra 3">
+            </div>
+        </section>
+
+        <section class="packs-section" id="packs-target">
+            <h2 style="font-size: 3rem; font-weight: 900; margin: 0;">PACKS</h2>
+            <div class="packs-grid">
+                <div class="pack-card" onclick="openPack('STANDARD', 65)">
+                    <h3>STANDARD</h3>
+                    <p style="font-size: 2.5rem; font-weight: 900; color: #ff4d00;">65€</p>
+                </div>
+                <div class="pack-card featured" onclick="openPack('IMPRESO', 85)">
+                    <p style="font-size: 0.7rem; font-weight: 900; color: #ff4d00;">MÁS VENDIDO</p>
+                    <h3>IMPRESO</h3>
+                    <p style="font-size: 2.5rem; font-weight: 900; color: #ff4d00;">85€</p>
+                </div>
+                <div class="pack-card" onclick="openPack('PRO VIDEO', 100)">
+                    <h3>PRO VIDEO</h3>
+                    <p style="font-size: 2.5rem; font-weight: 900; color: #ff4d00;">100€</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="packModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10005; justify-content:center; align-items:center;" onclick="this.style.display='none'">
+        <div style="background:#fff; padding:40px; border-radius:20px; text-align:center; max-width:350px; width:90%; color:#000;" onclick="event.stopPropagation()">
+            <h3 id="m-title" style="color:#ff4d00; font-size: 2rem; margin:0;"></h3>
+            <div style="display:flex; justify-content:space-between; margin-top:20px; background:#f4f4f4; padding:15px; border-radius:10px;">
+                <div><span style="font-size:0.6rem; color:#777;">RESERVA (60%)</span><div id="m-60" style="font-size:1.4rem; font-weight:900;"></div></div>
+                <div><span style="font-size:0.6rem; color:#777;">ENTREGA (40%)</span><div id="m-40" style="font-size:1.4rem; font-weight:900;"></div></div>
+            </div>
+            <p style="margin-top:20px; font-weight:900; font-size:0.8rem;">CONTACTA PARA EMPEZAR</p>
+        </div>
+    </div>
+
+    <script>
+        const container = document.getElementById('scroll-container');
+        const bar = document.getElementById('bar');
+
+        // LÓGICA BARRA DE PROGRESO
+        container.addEventListener('scroll', () => {
+            const max = container.scrollWidth - container.clientWidth;
+            const pct = (container.scrollLeft / max) * 100;
+            bar.style.width = pct + "%";
+        });
+
+        // BOTÓN IR A PACKS
+        function goToPacks() {
+            if (window.innerWidth > 768) {
+                container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
+            } else {
+                document.getElementById('packs-target').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // SCROLL RUEDA (PC)
+        window.addEventListener('wheel', (e) => {
+            if (window.innerWidth > 768 && e.deltaY !== 0) {
+                e.preventDefault();
+                container.scrollLeft += (e.deltaY * 3);
+            }
+        }, { passive: false });
+
+        // RATÓN CUSTOM
+        const dot = document.querySelector('.cursor-dot');
+        const outline = document.querySelector('.cursor-outline');
+        window.addEventListener('mousemove', (e) => {
+            if (dot) {
+                dot.style.left = e.clientX + 'px';
+                dot.style.top = e.clientY + 'px';
+                outline.style.left = e.clientX + 'px';
+                outline.style.top = e.clientY + 'px';
+            }
+        });
+
+        // MODAL CON DESGLOSE DE PAGO (60/40)
+        function openPack(n, p) {
+            document.getElementById('m-title').innerText = n + " (" + p + "€)";
+            document.getElementById('m-60').innerText = (p * 0.6).toFixed(0) + "€";
+            document.getElementById('m-40').innerText = (p * 0.4).toFixed(0) + "€";
+            document.getElementById('packModal').style.display = 'flex';
+        }
+
+        // STICKER DRAG
+        const sticker = document.getElementById('sticker');
+        let isDragging = false, ox, oy;
+        const start = (e) => { isDragging = true; const c = e.touches ? e.touches[0] : e; ox = c.clientX - sticker.offsetLeft; oy = c.clientY - sticker.offsetTop; };
+        const move = (e) => { if (!isDragging) return; const c = e.touches ? e.touches[0] : e; sticker.style.left = (c.clientX - ox) + 'px'; sticker.style.top = (c.clientY - oy) + 'px'; };
+        sticker.addEventListener('mousedown', start); sticker.addEventListener('touchstart', start);
+        window.addEventListener('mousemove', move); window.addEventListener('touchmove', move);
+        window.addEventListener('mouseup', () => isDragging = false); window.addEventListener('touchend', () => isDragging = false);
+    </script>
+
+</body>
+</html>
