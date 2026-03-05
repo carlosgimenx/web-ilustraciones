@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>C. Gimeno | Portfolio v0.6.2</title>
+    <title>C. Gimeno | Portfolio v0.6.3</title>
     <style>
         /* 1. BASE */
         body, html {
             margin: 0; padding: 0; width: 100%; min-height: 100%;
             font-family: 'Inter', sans-serif; background-color: #f0f0f0; 
-            overflow-x: hidden; /* Evita el baile lateral en móvil */
+            overflow-x: hidden;
         }
 
         .progress-bar {
@@ -24,7 +24,7 @@
             .cursor-outline { width: 40px; height: 40px; border: 2px solid #000; position: fixed; pointer-events: none; z-index: 9999; border-radius: 50%; transform: translate(-50%, -50%); transition: all 0.1s ease-out; }
         }
 
-        /* 2. STICKER FIJO */
+        /* 2. STICKER */
         .sticker { 
             position: fixed; top: 15%; right: 5%; width: 110px; z-index: 10001;
             cursor: grab; transform: rotate(-10deg); user-select: none;
@@ -32,11 +32,10 @@
         .sticker img { width: 100%; height: auto; pointer-events: none; }
         .sticker-label { background: #000; color: #fff; font-size: 0.5rem; padding: 3px 6px; font-weight: 900; text-align: center; }
 
-        /* 3. CONTENEDOR (Horizontal en PC, Vertical en Móvil) */
+        /* 3. CONTENEDOR */
         .main-container {
             display: flex; width: 100%; height: 100vh;
             overflow-x: auto; overflow-y: hidden; scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
         }
 
         section { flex-shrink: 0; height: 100%; display: flex; align-items: center; position: relative; width: 100vw; }
@@ -64,31 +63,45 @@
             .port-item:hover { transform: translateY(0) scale(1.03) rotate(0); z-index: 5; }
         }
 
-        .scratch-container {
-            position: relative; height: 100%; border-radius: 4px; box-shadow: 0 30px 60px rgba(0,0,0,0.1); overflow: hidden; background-color: #000;
-        }
+        .scratch-container { position: relative; height: 100%; border-radius: 4px; box-shadow: 0 30px 60px rgba(0,0,0,0.1); overflow: hidden; background-color: #000; }
         .scratch-container img { height: 100%; width: auto; display: block; }
         .scratch-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; }
 
         /* 6. CONTACTO */
         .contact-section { width: 100vw; background: #ff4d00; color: #fff; flex-direction: column; justify-content: center; text-align: center; }
         .contact-title { font-size: 8vw; font-weight: 900; line-height: 0.8; margin-bottom: 40px; text-transform: uppercase; }
-        .whatsapp-btn { background: #fff; color: #ff4d00; font-size: 1.5rem; padding: 25px 60px; border-radius: 100px; text-decoration: none; font-weight: 900; transition: 0.3s; box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
+        .whatsapp-btn { background: #fff; color: #ff4d00; font-size: 1.5rem; padding: 25px 60px; border-radius: 100px; text-decoration: none; font-weight: 900; transition: 0.3s; }
 
-        /* REGLAS ESPECÍFICAS PARA MÓVIL */
+        /* REGLAS MÓVIL CORREGIDAS */
         @media (max-width: 768px) {
-            body, html { overflow-y: auto; overflow-x: hidden; position: relative; }
+            body, html { overflow-y: auto; overflow-x: hidden; }
             .main-container { display: block; height: auto; width: 100%; overflow: visible; }
-            section { width: 100%; height: auto; min-height: 80vh; padding: 60px 20px; flex-direction: column; overflow: hidden; }
-            .hero { width: 100%; padding-top: 120px; box-sizing: border-box; }
-            .portfolio-brutal { flex-direction: column; gap: 40px; padding: 20px; width: 100%; box-sizing: border-box; }
+            
+            section { width: 100%; height: auto; padding: 40px 20px; flex-direction: column; overflow: hidden; }
+            
+            .hero { 
+                min-height: 60vh; /* Menos espacio muerto */
+                padding-top: 100px; 
+                padding-bottom: 20px;
+                justify-content: flex-start;
+                align-items: flex-start;
+                text-align: left;
+            }
+            
+            .portfolio-brutal { 
+                gap: 30px; 
+                padding: 10px 20px; 
+                margin-top: -20px; /* Sube el portfolio para acercarlo al Hero */
+            }
+
             .port-item { height: auto; width: 100%; transform: none !important; }
-            .scratch-container { width: 100%; height: auto; }
             .scratch-container img { width: 100%; height: auto; }
-            .scratch-canvas { display: none; } /* Desactivado en móvil para fluidez */
-            .contact-section { min-height: 100vh; padding: 40px 20px; }
+            .scratch-canvas { display: none; }
+            
+            .contact-section { min-height: 90vh; padding: 60px 20px; }
             .contact-title { font-size: 14vw; }
-            .sticker { width: 70px; top: 20px; right: 20px; }
+            .sticker { width: 70px; top: 15px; right: 15px; }
+            h1 { font-size: 18vw; }
         }
     </style>
 </head>
@@ -131,7 +144,6 @@
         const container = document.getElementById('scroll-container');
         const bar = document.getElementById('bar');
 
-        // BARRA DE PROGRESO ADAPTATIVA (Horizontal en PC, Vertical en Móvil)
         const updateProgress = () => {
             let pct = 0;
             if (window.innerWidth > 768) {
@@ -147,14 +159,10 @@
 
         function goToContact() {
             const target = document.getElementById('contact-target');
-            if (window.innerWidth > 768) {
-                container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
-            } else {
-                target.scrollIntoView({ behavior: 'smooth' });
-            }
+            if (window.innerWidth > 768) container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
+            else target.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // SCROLL HORIZONTAL SOLO PC
         window.addEventListener('wheel', (e) => {
             if (window.innerWidth > 768 && e.deltaY !== 0) {
                 e.preventDefault();
@@ -162,7 +170,6 @@
             }
         }, { passive: false });
 
-        // PINCEL (SCRATCH)
         const canvases = document.querySelectorAll('.scratch-canvas');
         canvases.forEach(canvas => {
             const ctx = canvas.getContext('2d');
@@ -182,7 +189,6 @@
             });
         });
 
-        // CURSOR PC
         const dot = document.querySelector('.cursor-dot');
         const outline = document.querySelector('.cursor-outline');
         window.addEventListener('mousemove', (e) => {
@@ -192,7 +198,6 @@
             }
         });
 
-        // STICKER DRAG
         const sticker = document.getElementById('sticker');
         let isDragging = false, ox, oy;
         const start = (e) => { isDragging = true; const c = e.touches ? e.touches[0] : e; ox = c.clientX - sticker.offsetLeft; oy = c.clientY - sticker.offsetTop; };
@@ -202,4 +207,4 @@
         window.addEventListener('mouseup', () => isDragging = false); window.addEventListener('touchend', () => isDragging = false);
     </script>
 </body>
-</html>
+</html>z
