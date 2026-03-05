@@ -51,7 +51,7 @@
             transition: transform 0.1s ease-out; will-change: transform;
         }
         
-        /* PORTFOLIO DESKTOP */
+        /* PORTFOLIO */
         .portfolio-brutal { flex-direction: row; width: auto; gap: 80px; padding: 0 10vw; justify-content: flex-start; }
         
         .scratch-instruction {
@@ -69,41 +69,27 @@
         /* CONTACTO */
         .contact-section { background: var(--accent); color: #fff; padding: 40px; }
         .contact-title { font-size: 8vw; font-weight: 900; line-height: 0.8; margin-bottom: 40px; }
-        .whatsapp-btn { background: #fff; color: var(--accent); font-size: 1.5rem; padding: 25px 60px; border-radius: 100px; text-decoration: none; font-weight: 900; margin-bottom: 20px; display: inline-block; }
+        .whatsapp-btn { background: #fff; color: var(--accent); font-size: 1.5rem; padding: 25px 60px; border-radius: 100px; text-decoration: none; font-weight: 900; margin-bottom: 20px; display: inline-block; transition: 0.3s; }
+        .whatsapp-btn:hover { transform: scale(1.05); }
         .email-link { color: #ffffff; text-decoration: none; font-weight: 900; font-size: 1.2rem; letter-spacing: 1px; }
+        .email-link:hover { text-decoration: underline; }
 
-        /* INTERRUPTOR Y STICKER */
+        /* UI ELEMENTS */
         .theme-switch { position: fixed; bottom: 30px; left: 30px; z-index: 10005; background: var(--text); color: var(--bg); padding: 8px 15px; border-radius: 50px; font-weight: 900; font-size: 0.7rem; cursor: pointer; }
-        .sticker { position: fixed; top: 15%; right: 5%; width: 110px; z-index: 10001; cursor: grab; transform: rotate(-10deg); }
+        .sticker { position: fixed; top: 15%; right: 5%; width: 110px; z-index: 10001; cursor: grab; transform: rotate(-10deg); touch-action: none; }
 
-        /* --- ARREGLO MÓVIL CRÍTICO --- */
+        /* MOBILE RESPONSIVE */
         @media (max-width: 768px) {
             .main-container { display: block; height: auto; overflow-y: auto; }
             section { width: 100%; height: auto; min-height: 100vh; padding: 100px 20px; }
-            
-            .portfolio-brutal { 
-                flex-direction: column !important; /* Forzamos columna */
-                width: 100% !important; 
-                gap: 50px; /* Espacio entre fotos */
-                padding: 50px 20px;
-            }
-
-            .port-item { 
-                height: auto; /* Que la altura dependa de la foto */
-                width: 100%; 
-                opacity: 1; 
-                transform: none; 
-            }
-            
-            .scratch-container img { 
-                width: 100%; /* La foto ocupa el ancho del móvil */
-                height: auto; 
-            }
-
+            .portfolio-brutal { flex-direction: column !important; width: 100% !important; gap: 50px; padding: 50px 20px; }
+            .port-item { height: auto; width: 100%; opacity: 1; transform: none; }
+            .scratch-container img { width: 100%; height: auto; }
             .scratch-instruction { display: none; }
             h1 { font-size: 18vw; transform: none !important; }
             .contact-title { font-size: 15vw; }
             .scratch-canvas { display: none; }
+            .whatsapp-btn { font-size: 1.1rem; padding: 20px 40px; width: 100%; max-width: 300px; }
         }
     </style>
 </head>
@@ -117,7 +103,7 @@
 
     <div id="sticker" class="sticker">
         <img src="./img/sticker-final.webp" alt="Sticker" style="width:100%">
-        <div id="distance-meter" style="font-size: 9px; text-align: center; font-weight: 900; background: rgba(255,255,255,0.8); border-radius: 5px; color: #000;">0 PX</div>
+        <div id="distance-meter" style="font-size: 9px; text-align: center; font-weight: 900; background: rgba(255,255,255,0.8); border-radius: 5px; color: #000; margin-top:5px;">0 PX</div>
     </div>
 
     <div class="main-container" id="scroll-container">
@@ -132,7 +118,6 @@
 
         <section class="portfolio-brutal">
             <div class="scratch-instruction">¡RASCA Y DESCUBRE!</div>
-            
             <div class="port-item"><div class="scratch-container"><img src="./img/ilustracion-1.webp" alt="1"><canvas class="scratch-canvas"></canvas></div></div>
             <div class="port-item"><div class="scratch-container"><img src="./img/ilustracion-2.webp" alt="2"><canvas class="scratch-canvas"></canvas></div></div>
             <div class="port-item"><div class="scratch-container"><img src="./img/ilustracion-3.webp" alt="3"><canvas class="scratch-canvas"></canvas></div></div>
@@ -141,11 +126,13 @@
         <section class="contact-section" id="contact-target">
             <div class="contact-title">¿QUIERES<br>SABER MÁS?</div>
             <a href="https://wa.me/34670898357" target="_blank" class="whatsapp-btn">DAME CAÑA</a>
+            <br>
             <a href="mailto:carlosgimenosanchez@gmail.com" class="email-link">carlosgimenosanchez@gmail.com</a>
         </section>
     </div>
 
     <script>
+        // 1. PARALLAX NOMBRE (SOLO DESKTOP)
         const heroName = document.getElementById('hero-name');
         window.addEventListener('mousemove', (e) => {
             if (window.innerWidth > 768) {
@@ -155,6 +142,7 @@
             }
         });
 
+        // 2. MODO OSCURO
         function toggleTheme() {
             const body = document.body;
             const isDark = body.getAttribute('data-theme') === 'dark';
@@ -162,43 +150,63 @@
             document.getElementById('theme-text').innerText = isDark ? "MODO OSCURO" : "MODO CLARO";
         }
 
+        // 3. BARRA DE PROGRESO Y SCROLL HORIZONTAL
         const container = document.getElementById('scroll-container');
         const bar = document.getElementById('bar');
-        
-        // Scroll horizontal en PC, vertical en móvil
         const updateProgress = () => {
             let pct = (window.innerWidth > 768) 
                 ? (container.scrollLeft / (container.scrollWidth - container.clientWidth)) * 100
                 : (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
             bar.style.width = pct + "%";
         };
-
         container.addEventListener('scroll', updateProgress);
         window.addEventListener('scroll', updateProgress);
-
         window.addEventListener('wheel', (e) => {
             if (window.innerWidth > 768 && e.deltaY !== 0) {
                 e.preventDefault(); container.scrollLeft += (e.deltaY * 2);
             }
         }, { passive: false });
 
+        // 4. ANIMACIÓN DE ENTRADA PORTFOLIO
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
         }, { threshold: 0.1 });
         document.querySelectorAll('.port-item').forEach(item => observer.observe(item));
 
+        // 5. STICKER ARRASTRABLE (RATÓN + TÁCTIL)
         const sticker = document.getElementById('sticker');
+        const distText = document.getElementById('distance-meter');
         let isDragging = false, totalDist = 0, lastX, lastY, ox, oy;
-        sticker.addEventListener('mousedown', (e) => { isDragging = true; ox = e.clientX - sticker.offsetLeft; oy = e.clientY - sticker.offsetTop; lastX = e.clientX; lastY = e.clientY; });
-        window.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            totalDist += Math.sqrt(Math.pow(e.clientX - lastX, 2) + Math.pow(e.clientY - lastY, 2));
-            document.getElementById('distance-meter').innerText = Math.floor(totalDist) + " PX";
-            sticker.style.left = (e.clientX - ox) + 'px'; sticker.style.top = (e.clientY - oy) + 'px';
-            lastX = e.clientX; lastY = e.clientY;
-        });
-        window.addEventListener('mouseup', () => isDragging = false);
 
+        const start = (e) => {
+            isDragging = true;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            ox = clientX - sticker.offsetLeft;
+            oy = clientY - sticker.offsetTop;
+            lastX = clientX; lastY = clientY;
+        };
+        const move = (e) => {
+            if (!isDragging) return;
+            if (e.touches) e.preventDefault();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            totalDist += Math.sqrt(Math.pow(clientX - lastX, 2) + Math.pow(clientY - lastY, 2));
+            distText.innerText = Math.floor(totalDist) + " PX";
+            sticker.style.left = (clientX - ox) + 'px';
+            sticker.style.top = (clientY - oy) + 'px';
+            lastX = clientX; lastY = clientY;
+        };
+        const end = () => isDragging = false;
+
+        sticker.addEventListener('mousedown', start);
+        window.addEventListener('mousemove', move);
+        window.addEventListener('mouseup', end);
+        sticker.addEventListener('touchstart', start, { passive: false });
+        window.addEventListener('touchmove', move, { passive: false });
+        window.addEventListener('touchend', end);
+
+        // 6. EFECTO RASCADO (CANVAS)
         const canvases = document.querySelectorAll('.scratch-canvas');
         canvases.forEach(canvas => {
             const ctx = canvas.getContext('2d');
@@ -216,6 +224,7 @@
             });
         });
 
+        // 7. BOTÓN NAVEGACIÓN
         function goToContact() {
             if (window.innerWidth > 768) container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
             else document.getElementById('contact-target').scrollIntoView({ behavior: 'smooth' });
