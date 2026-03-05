@@ -5,62 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>C. Gimeno | Ilustrador</title>
     <style>
+        /* VARIABLES PARA MODO OSCURO */
+        :root {
+            --bg: #f0f0f0;
+            --text: #000000;
+            --accent: #ff4d00;
+            --card-bg: #e8e8e8;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0a0a0a;
+            --text: #ffffff;
+            --card-bg: #1a1a1a;
+        }
+
         /* 1. BASE */
         body, html {
             margin: 0; padding: 0; width: 100%; min-height: 100%;
-            font-family: 'Inter', sans-serif; background-color: #f0f0f0; 
-            overflow-x: hidden;
+            font-family: 'Inter', sans-serif; background-color: var(--bg); 
+            color: var(--text);
+            overflow-x: hidden; transition: background-color 0.4s ease;
         }
 
         .progress-bar {
             position: fixed; top: 0; left: 0; height: 6px;
-            background: #ff4d00; width: 0%; z-index: 10002;
+            background: var(--accent); width: 0%; z-index: 10002;
             transition: width 0.1s ease-out;
         }
 
         @media (min-width: 1024px) {
             * { cursor: none !important; }
-            .cursor-dot { width: 8px; height: 8px; background: #ff4d00; position: fixed; pointer-events: none; z-index: 10000; border-radius: 50%; transform: translate(-50%, -50%); }
-            .cursor-outline { width: 40px; height: 40px; border: 2px solid #000; position: fixed; pointer-events: none; z-index: 9999; border-radius: 50%; transform: translate(-50%, -50%); transition: all 0.1s ease-out; }
+            .cursor-dot { width: 8px; height: 8px; background: var(--accent); position: fixed; pointer-events: none; z-index: 10000; border-radius: 50%; transform: translate(-50%, -50%); }
+            .cursor-outline { width: 40px; height: 40px; border: 2px solid var(--text); position: fixed; pointer-events: none; z-index: 9999; border-radius: 50%; transform: translate(-50%, -50%); transition: all 0.1s ease-out; }
         }
 
-        /* 2. STICKER */
+        /* TEMA TOGGLE (INTERRUPTOR) */
+        .theme-switch {
+            position: fixed; bottom: 30px; left: 30px; z-index: 10005;
+            display: flex; align-items: center; gap: 10px;
+            background: var(--text); color: var(--bg);
+            padding: 8px 15px; border-radius: 50px; font-weight: 900;
+            font-size: 0.7rem; cursor: pointer; text-transform: uppercase;
+        }
+
+        /* 2. STICKER & CONTADOR */
         .sticker { 
             position: fixed; top: 15%; right: 5%; width: 110px; z-index: 10001;
             cursor: grab; transform: rotate(-10deg); user-select: none;
         }
         .sticker img { width: 100%; height: auto; pointer-events: none; }
         .sticker-label { background: #000; color: #fff; font-size: 0.5rem; padding: 3px 6px; font-weight: 900; text-align: center; }
+        #distance-meter { font-size: 9px; margin-top: 5px; opacity: 0.7; color: var(--text); text-align: center; font-weight: bold; }
 
         /* 3. CONTENEDOR */
         .main-container {
             display: flex; width: 100%; height: 100vh;
             overflow-x: auto; overflow-y: hidden; scroll-behavior: smooth;
         }
-
         section { flex-shrink: 0; height: 100%; display: flex; align-items: center; position: relative; width: 100vw; }
 
         /* 4. HERO */
         .hero { width: 85vw; padding: 5vw; }
         .logo { position: absolute; top: 40px; left: 40px; width: 65px; }
-        h1 { font-size: 10vw; line-height: 0.85; margin: 0; font-weight: 900; text-transform: uppercase; letter-spacing: -4px; }
+        h1 { font-size: 10vw; line-height: 0.85; margin: 0; font-weight: 900; text-transform: uppercase; letter-spacing: -4px; transition: transform 0.1s ease-out; }
         
         .nav-buttons { display: flex; gap: 15px; margin-top: 30px; }
         .btn { padding: 18px 35px; border-radius: 50px; font-weight: 900; text-decoration: none; text-transform: uppercase; font-size: 0.8rem; transition: 0.3s; display: inline-block; }
-        .btn-black { background: #000; color: #fff; }
-        .btn-orange { background: #ff4d00; color: #fff; border: 2px solid #ff4d00; }
+        .btn-black { background: var(--text); color: var(--bg); }
+        .btn-orange { background: var(--accent); color: #fff; border: 2px solid var(--accent); }
 
-        /* 5. PORTFOLIO */
+        /* 5. PORTFOLIO & ANIMACIONES ENTRADA */
         .portfolio-brutal { display: flex; gap: 80px; padding: 0 5vw; align-items: center; width: auto; }
-        .bg-text { position: absolute; font-size: 20vw; font-weight: 900; color: #e8e8e8; z-index: -1; white-space: nowrap; pointer-events: none; left: 2vw; }
+        .bg-text { position: absolute; font-size: 20vw; font-weight: 900; color: var(--card-bg); z-index: -1; white-space: nowrap; pointer-events: none; left: 2vw; }
 
-        .port-item { position: relative; height: 65vh; transition: transform 0.4s ease-out; }
+        .port-item { 
+            position: relative; height: 65vh; 
+            transition: transform 0.4s ease-out, opacity 0.6s ease-out; 
+            opacity: 0; transform: translateY(50px) rotate(5deg);
+        }
+        .port-item.visible { opacity: 1; transform: translateY(0) rotate(0); }
         
         @media (min-width: 769px) {
-            .port-item:nth-child(1) { transform: translateY(-8%) rotate(-2deg); }
-            .port-item:nth-child(2) { transform: translateY(10%) rotate(1deg); }
-            .port-item:nth-child(3) { transform: translateY(-3%) rotate(-1deg); }
-            .port-item:hover { transform: translateY(0) scale(1.03) rotate(0); z-index: 5; }
+            .port-item:nth-child(1).visible { transform: translateY(-8%) rotate(-2deg); }
+            .port-item:nth-child(2).visible { transform: translateY(10%) rotate(1deg); }
+            .port-item:nth-child(3).visible { transform: translateY(-3%) rotate(-1deg); }
+            .port-item:hover { transform: translateY(0) scale(1.03) rotate(0) !important; z-index: 5; }
         }
 
         .scratch-container { position: relative; height: 100%; border-radius: 4px; box-shadow: 0 30px 60px rgba(0,0,0,0.1); overflow: hidden; background-color: #000; }
@@ -68,94 +97,51 @@
         .scratch-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; }
 
         /* 6. CONTACTO */
-        .contact-section { width: 100vw; background: #ff4d00; color: #fff; flex-direction: column; justify-content: center; text-align: center; }
+        .contact-section { width: 100vw; background: var(--accent); color: #fff; flex-direction: column; justify-content: center; text-align: center; }
         .contact-title { font-size: 8vw; font-weight: 900; line-height: 0.8; margin-bottom: 40px; text-transform: uppercase; }
-        .whatsapp-btn { background: #fff; color: #ff4d00; font-size: 1.5rem; padding: 25px 60px; border-radius: 100px; text-decoration: none; font-weight: 900; transition: 0.3s; }
+        .whatsapp-btn { background: #fff; color: var(--accent); font-size: 1.5rem; padding: 25px 60px; border-radius: 100px; text-decoration: none; font-weight: 900; transition: 0.3s; }
 
-        /* REGLAS MÓVIL CORREGIDAS */
+        /* REGLAS MÓVIL */
         @media (max-width: 768px) {
             body, html { overflow-y: auto; overflow-x: hidden; }
             .main-container { display: block; height: auto; width: 100%; overflow: visible; }
-            
             section { width: 100%; height: auto; padding: 60px 20px; flex-direction: column; overflow: hidden; align-items: center; box-sizing: border-box; }
-            
-            /* CENTRADO HERO EN MÓVIL */
-            .hero { 
-                width: 100% !important; 
-                padding: 120px 20px 60px 20px !important; 
-                text-align: center; 
-                min-height: 80vh; 
-                display: flex; 
-                flex-direction: column; 
-                justify-content: center; 
-                align-items: center;
-                box-sizing: border-box;
-            }
-            .logo { 
-                position: absolute; 
-                top: 30px; 
-                left: 50%; 
-                transform: translateX(-50%); 
-                width: 50px; 
-            }
-            h1 { 
-                font-size: 16vw; /* Un poco más pequeño para que no rompa línea si el nombre es largo */
-                text-align: center; 
-                width: 100%;
-                margin: 0;
-            }
+            .hero { width: 100% !important; padding: 120px 20px 60px 20px !important; text-align: center; min-height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+            .logo { position: absolute; top: 30px; left: 50%; transform: translateX(-50%); width: 50px; }
+            h1 { font-size: 16vw; text-align: center; }
             .nav-buttons { justify-content: center; width: 100%; }
-            
-            /* PORTFOLIO MÓVIL */
-            .portfolio-brutal { gap: 30px; padding: 40px 20px; margin-top: 0; width: 100%; align-items: center; box-sizing: border-box; }
-            .port-item { height: auto; width: 100%; transform: none !important; }
+            .portfolio-brutal { gap: 30px; padding: 40px 20px; width: 100%; flex-direction: column; }
+            .port-item { height: auto; width: 100%; opacity: 1; transform: none !important; margin-bottom: 40px; }
             .scratch-container img { width: 100%; height: auto; }
             .scratch-canvas { display: none; }
-            
-            /* CONTACTO MÓVIL */
-            .contact-section { 
-                min-height: 100vh; 
-                display: flex !important; 
-                justify-content: center !important; 
-                align-items: center !important; 
-                padding: 40px 20px;
-                width: 100%;
-                box-sizing: border-box;
-            }
-            .contact-title { 
-                font-size: 14vw; 
-                text-align: center; 
-                margin: 0 0 40px 0; 
-                width: 100%; 
-                display: block;
-            }
-            .whatsapp-btn { font-size: 1.2rem; padding: 20px 40px; width: auto; display: inline-block; }
-            
-            .sticker { 
-                top: 50%; left: 50%; 
-                right: auto;
-                transform: translate(-50%, -50%) rotate(-10deg); 
-                width: 90px;
-            }
+            .contact-section { min-height: 100vh; display: flex !important; }
+            .contact-title { font-size: 14vw; }
+            .theme-switch { bottom: 20px; left: 20px; font-size: 0.6rem; }
+            .sticker { top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-10deg); width: 80px; }
         }
     </style>
 </head>
-<body>
+<body data-theme="light">
 
     <div class="progress-bar" id="bar"></div>
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
 
+    <div class="theme-switch" onclick="toggleTheme()">
+        <span id="theme-text">MODO OSCURO</span>
+    </div>
+
     <div id="sticker" class="sticker">
         <img src="./img/sticker-final.webp" alt="Sticker">
         <div class="sticker-label">MUEVE EL ARTE</div>
+        <div id="distance-meter">0 PX</div>
     </div>
 
     <div class="main-container" id="scroll-container">
         
         <section class="hero">
             <img src="./img/tu-logo.webp" alt="Logo" class="logo">
-            <h1>CARLOS<br>GIMENO</h1>
+            <h1 id="hero-name">CARLOS<br>GIMENO</h1>
             <div class="nav-buttons">
                 <a href="https://wa.me/34670898357" target="_blank" class="btn btn-black">WhatsApp</a>
                 <a href="javascript:void(0)" class="btn btn-orange" onclick="goToContact()">¿Saber más?</a>
@@ -176,10 +162,47 @@
     </div>
 
     <script>
-        // ... (Tu script se mantiene igual, no necesita cambios para el centrado visual)
         const container = document.getElementById('scroll-container');
         const bar = document.getElementById('bar');
 
+        // 1. MODO OSCURO
+        function toggleTheme() {
+            const body = document.body;
+            const text = document.getElementById('theme-text');
+            if (body.getAttribute('data-theme') === 'light') {
+                body.setAttribute('data-theme', 'dark');
+                text.innerText = "MODO CLARO";
+            } else {
+                body.setAttribute('data-theme', 'light');
+                text.innerText = "MODO OSCURO";
+            }
+        }
+
+        // 2. CONTADOR DE DISTANCIA STICKER
+        let totalDistance = 0;
+        let lastX = 0, lastY = 0;
+        const distanceDisplay = document.getElementById('distance-meter');
+
+        // 3. ANIMACIÓN DE ENTRADA (Intersection Observer)
+        const observerOptions = { threshold: 0.2 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.port-item').forEach(item => observer.observe(item));
+
+        // 4. MOVIMIENTO PARALLAX SUAVE EN NOMBRE (Giroscopio/Mouse)
+        window.addEventListener('mousemove', (e) => {
+            if (window.innerWidth > 768) {
+                const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+                const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+                document.getElementById('hero-name').style.transform = `translate(${moveX}px, ${moveY}px)`;
+            }
+        });
+
+        // RE-CALCULAR PROGRESO
         const updateProgress = () => {
             let pct = 0;
             if (window.innerWidth > 768) {
@@ -206,6 +229,7 @@
             }
         }, { passive: false });
 
+        // SCRATCH CANVAS
         const canvases = document.querySelectorAll('.scratch-canvas');
         canvases.forEach(canvas => {
             const ctx = canvas.getContext('2d');
@@ -225,6 +249,7 @@
             });
         });
 
+        // CURSOR
         const dot = document.querySelector('.cursor-dot');
         const outline = document.querySelector('.cursor-outline');
         window.addEventListener('mousemove', (e) => {
@@ -234,6 +259,7 @@
             }
         });
 
+        // STICKER DRAG + DISTANCE
         const sticker = document.getElementById('sticker');
         let isDragging = false, ox, oy;
         
@@ -241,11 +267,18 @@
             isDragging = true; 
             const c = e.touches ? e.touches[0] : e; 
             ox = c.clientX - sticker.offsetLeft; oy = c.clientY - sticker.offsetTop; 
-            sticker.style.transform = 'rotate(-10deg)'; 
+            lastX = c.clientX; lastY = c.clientY;
         };
         const move = (e) => { 
             if (!isDragging) return; 
             const c = e.touches ? e.touches[0] : e; 
+            
+            // Calcular distancia
+            const dist = Math.sqrt(Math.pow(c.clientX - lastX, 2) + Math.pow(c.clientY - lastY, 2));
+            totalDistance += dist;
+            distanceDisplay.innerText = Math.floor(totalDistance) + " PX";
+            lastX = c.clientX; lastY = c.clientY;
+
             sticker.style.top = (c.clientY - oy) + 'px';
             sticker.style.left = (c.clientX - ox) + 'px';
             sticker.style.right = 'auto'; 
