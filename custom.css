@@ -1,0 +1,266 @@
+* {
+    font-family: 'Inter', sans-serif !important;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #f0f0f0;
+    --text: #000000;
+    --accent: #ff4d00;
+    --card-bg: #1a1a1a;
+}
+
+[data-theme="dark"] {
+    --bg: #0a0a0a;
+    --text: #ffffff;
+    --card-bg: #111111;
+}
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    transition: background-color 0.4s ease;
+}
+
+/* LOGO */
+.logo {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 65px;
+    z-index: 20;
+    animation: flotar 4s ease-in-out infinite;
+}
+
+@keyframes flotar {
+    0%, 100% { transform: translateX(-50%) translateY(0px) rotate(0deg); }
+    50% { transform: translateX(-50%) translateY(-15px) rotate(3deg); }
+}
+
+.main-container {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+}
+
+section {
+    flex-shrink: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100vw;
+    text-align: center;
+}
+
+/* HERO */
+h1 {
+    font-size: 10vw;
+    line-height: 0.85;
+    margin: 0;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -4px;
+    width: 100%;
+    transition: transform 0.1s ease-out;
+    will-change: transform;
+}
+
+/* PORTFOLIO */
+.portfolio-brutal {
+    flex-direction: row;
+    width: auto;
+    gap: 80px;
+    padding: 0 10vw;
+    justify-content: flex-start;
+}
+
+.scratch-instruction {
+    position: absolute;
+    top: 8%;
+    left: 10vw;
+    color: var(--accent);
+    font-weight: 900;
+    font-size: 2.5rem;
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.port-item {
+    position: relative;
+    height: 65vh;
+    transition: 0.4s;
+    opacity: 0;
+    transform: translateY(50px);
+}
+
+.port-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.scratch-container {
+    position: relative;
+    height: 100%;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: var(--accent);
+}
+
+.scratch-container img {
+    height: 100%;
+    width: auto;
+    display: block;
+}
+
+.scratch-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: crosshair;
+}
+
+/* CONTACTO */
+.contact-section {
+    background: var(--accent);
+    color: #fff;
+    padding: 40px;
+}
+
+.contact-title {
+    font-size: 8vw;
+    font-weight: 900;
+    line-height: 0.8;
+    margin-bottom: 40px;
+}
+
+.whatsapp-btn {
+    background: #fff;
+    color: var(--accent);
+    font-size: 1.5rem;
+    padding: 25px 60px;
+    border-radius: 100px;
+    text-decoration: none;
+    font-weight: 900;
+    margin-bottom: 20px;
+    display: inline-block;
+    transition: 0.3s;
+}
+
+.whatsapp-btn:hover {
+    transform: scale(1.05);
+}
+
+.email-link {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 900;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+}
+
+.email-link:hover {
+    text-decoration: underline;
+}
+
+/* UI ELEMENTS */
+.theme-switch {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    z-index: 10005;
+    background: var(--text);
+    color: var(--bg);
+    padding: 8px 15px;
+    border-radius: 50px;
+    font-weight: 900;
+    font-size: 0.7rem;
+    cursor: pointer;
+}
+
+.sticker {
+    position: fixed;
+    top: 15%;
+    right: 5%;
+    width: 110px;
+    z-index: 10001;
+    cursor: grab;
+    transform: rotate(-10deg);
+    touch-action: none;
+}
+
+/* MOBILE RESPONSIVE */
+@media (max-width: 768px) {
+    .main-container {
+        display: block;
+        height: auto;
+        overflow-y: auto;
+    }
+
+    section {
+        width: 100%;
+        height: auto;
+        min-height: 100vh;
+        padding: 100px 20px;
+    }
+
+    .portfolio-brutal {
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 50px;
+        padding: 50px 20px;
+    }
+
+    .port-item {
+        height: auto;
+        width: 100%;
+        opacity: 1;
+        transform: none;
+    }
+
+    .scratch-container img {
+        width: 100%;
+        height: auto;
+    }
+
+    .scratch-instruction {
+        display: none;
+    }
+
+    h1 {
+        font-size: 18vw;
+        transform: none !important;
+    }
+
+    .contact-title {
+        font-size: 15vw;
+    }
+
+    .scratch-canvas {
+        display: none;
+    }
+
+    .whatsapp-btn {
+        font-size: 1.1rem;
+        padding: 20px 40px;
+        width: 100%;
+        max-width: 300px;
+    }
+}
